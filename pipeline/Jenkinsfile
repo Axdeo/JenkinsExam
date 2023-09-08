@@ -9,11 +9,19 @@ pipeline{
 
         stage('run&test dockercompose'){
             steps{
-                docker-compose up -d
+                script{
+                sh '''
+                  docker-compose up -d
+                '''
+                }
             }
             steps{
+                script{
+                sh '''
                 curl http://localhost:8080/api/v1/movies/docs 
-                curl http://localhost:8080/api/v1/casts/docs 
+                curl http://localhost:8080/api/v1/casts/docs
+                '''
+                }
             }
         }
 
