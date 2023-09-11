@@ -353,7 +353,7 @@ autoscaling:
 extraVolumes: 
   - name: nginx-conf
     hostPath:
-      path: /home/ubuntu/JenkinsExam/K8S/nginx/nginx_config.conf
+      path: /home/ubuntu/JenkinsExam/nginx_config.conf
       type: File  
 ## @param extraVolumeMounts Array to add extra mount
 ##
