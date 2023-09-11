@@ -37,7 +37,7 @@ spec:
           args:
             - sh
             - -c
-            - "uvicorn main:app --reload --host 0.0.0.0"
-          environment:
+            - "uvicorn app.main:app --reload --host 0.0.0.0"
+          env:
             - name: DATABASE_URI
-              value: postgresql://cast_db_username:cast_db_password@cast_db/cast_db_dev
+              value: postgresql://cast_db_username:cast_db_password@cast-db-postgresql/cast_db_dev
