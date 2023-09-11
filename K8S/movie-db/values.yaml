@@ -29,9 +29,9 @@ global:
     ##
     auth:
       postgresPassword: admin
-      username: movie_db_username
-      password: movie_db_password
-      database: movie_db_dev
+      username: movie
+      password: moviepassword
+      database: moviedb
       existingSecret: ""
       secretKeys:
         adminPasswordKey: ""
@@ -41,7 +41,7 @@ global:
     ##
     service:
       ports:
-        postgresql: movie-db
+        postgresql: ""
 
 ## @section Common parameters
 ##

@@ -29,9 +29,9 @@ global:
     ##
     auth:
       postgresPassword: admin
-      username: cast_db_username
-      password: cast_db_password
-      database: cast_db_dev
+      username: cast
+      password: castpassword
+      database: castdb
       existingSecret: ""
       secretKeys:
         adminPasswordKey: ""
@@ -41,7 +41,7 @@ global:
     ##
     service:
       ports:
-        postgresql: cast-db
+        postgresql: ""
 
 ## @section Common parameters
 ##

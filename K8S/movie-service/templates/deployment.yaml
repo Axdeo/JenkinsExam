@@ -36,7 +36,7 @@ spec:
               protocol: TCP
           env:
             - name: DATABASE_URI
-              value: postgresql://movie_db_username:movie_db_password@movie-db-postgresql.dev.svc.cluster.local/movie_db_dev
+              value: postgresql://movie:moviepassword@movie-db-postgresql.dev.svc.cluster.local/moviedb
             - name: CAST_SERVICE_HOST_URL
               value: http://clusterip-cast-service:8000/api/v1/casts/
           args:
