@@ -28,10 +28,10 @@ global:
     ## @param global.postgresql.auth.secretKeys.replicationPasswordKey Name of key in existing secret to use for PostgreSQL credentials (overrides `auth.secretKeys.replicationPasswordKey`). Only used when `global.postgresql.auth.existingSecret` is set.
     ##
     auth:
-      postgresPassword: ""
-      username: "movie_db_username"
-      password: "movie_db_password"
-      database: "movie_db_dev"
+      postgresPassword: admin
+      username: movie_db_username
+      password: movie_db_password
+      database: movie_db_dev
       existingSecret: ""
       secretKeys:
         adminPasswordKey: ""
@@ -41,7 +41,7 @@ global:
     ##
     service:
       ports:
-        postgresql: "movie_db"
+        postgresql: movie-db
 
 ## @section Common parameters
 ##
