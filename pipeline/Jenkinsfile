@@ -124,7 +124,7 @@ pipeline{
                 cat values.yaml
                 helm upgrade --install nginx . --values=values.yaml --namespace dev
                 helm upgrade --install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
-                --namespace dev \
+                --namespace staging \
                 --set global.postgresql.auth.postgresPassword=admin \
                 --set global.postgresql.auth.username=movie \
                 --set global.postgresql.auth.password=moviepassword \
@@ -132,7 +132,7 @@ pipeline{
                 --set livenessProbe.initialDelaySeconds=100 \
                 --set readinessProbe.initialDelaySeconds=100
                 helm upgrade --install cast-db oci://registry-1.docker.io/bitnamicharts/postgresql \
-                --namespace dev \
+                --namespace staging \
                 --set global.postgresql.auth.postgresPassword=admin \
                 --set global.postgresql.auth.username=cast \
                 --set global.postgresql.auth.password=castpassword \
@@ -158,15 +158,87 @@ pipeline{
                 mkdir .kube
                 ls
                 cat $KUBECONFIG > .kube/config
-                cp fastapi/values.yaml values.yaml
+                cd ./K8S/cast-service/
                 cat values.yaml
                 sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
-                helm upgrade --install app fastapi --values=values.yaml --namespace staging
+                helm upgrade --install cast-service . --values=values.yaml --namespace staging
+                cd ../movie-service/
+                cat values.yaml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
+                helm upgrade --install movie-service . --values=values.yaml --namespace staging
+                cd ../nginx/
+                cat values.yaml
+                helm upgrade --install nginx . --values=values.yaml --namespace staging
+                helm upgrade --install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
+                --namespace staging \
+                --set global.postgresql.auth.postgresPassword=admin \
+                --set global.postgresql.auth.username=movie \
+                --set global.postgresql.auth.password=moviepassword \
+                --set global.postgresql.auth.database=moviedb \
+                --set livenessProbe.initialDelaySeconds=100 \
+                --set readinessProbe.initialDelaySeconds=100
+                helm upgrade --install cast-db oci://registry-1.docker.io/bitnamicharts/postgresql \
+                --namespace staging \
+                --set global.postgresql.auth.postgresPassword=admin \
+                --set global.postgresql.auth.username=cast \
+                --set global.postgresql.auth.password=castpassword \
+                --set global.postgresql.auth.database=castdb \
+                --set livenessProbe.initialDelaySeconds=100 \
+                --set readinessProbe.initialDelaySeconds=100
+
                 '''
                 }
             }   
 
             }
+
+        stage('Deploiement en QA'){
+            environment
+            {
+                KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+            }
+            steps {
+                script {
+                sh '''
+                rm -Rf .kube
+                mkdir .kube
+                ls
+                cat $KUBECONFIG > .kube/config
+                cd ./K8S/cast-service/
+                cat values.yaml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
+                helm upgrade --install cast-service . --values=values.yaml --namespace qa
+                cd ../movie-service/
+                cat values.yaml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
+                helm upgrade --install movie-service . --values=values.yaml --namespace qa
+                cd ../nginx/
+                cat values.yaml
+                helm upgrade --install nginx . --values=values.yaml --namespace qa
+                helm upgrade --install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
+                --namespace qa \
+                --set global.postgresql.auth.postgresPassword=admin \
+                --set global.postgresql.auth.username=movie \
+                --set global.postgresql.auth.password=moviepassword \
+                --set global.postgresql.auth.database=moviedb \
+                --set livenessProbe.initialDelaySeconds=100 \
+                --set readinessProbe.initialDelaySeconds=100
+                helm upgrade --install cast-db oci://registry-1.docker.io/bitnamicharts/postgresql \
+                --namespace qa \
+                --set global.postgresql.auth.postgresPassword=admin \
+                --set global.postgresql.auth.username=cast \
+                --set global.postgresql.auth.password=castpassword \
+                --set global.postgresql.auth.database=castdb \
+                --set livenessProbe.initialDelaySeconds=100 \
+                --set readinessProbe.initialDelaySeconds=100
+
+                '''
+                }
+            }   
+
+        }
+
+
         stage('Deploiement en prod'){
             environment
             {
@@ -185,11 +257,35 @@ pipeline{
                     mkdir .kube
                     ls
                     cat $KUBECONFIG > .kube/config
-                    cp fastapi/values.yaml values.yaml
+                    cd ./K8S/cast-service/
                     cat values.yaml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
-                    helm upgrade --install app fastapi --values=values.yaml --namespace prod
-                    '''
+                    helm upgrade --install cast-service . --values=values.yaml --namespace prod
+                    cd ../movie-service/
+                    cat values.yaml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
+                    helm upgrade --install movie-service . --values=values.yaml --namespace prod
+                    cd ../nginx/
+                    cat values.yaml
+                    helm upgrade --install nginx . --values=values.yaml --namespace prod
+                    helm upgrade --install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
+                    --namespace prod \
+                    --set global.postgresql.auth.postgresPassword=admin \
+                    --set global.postgresql.auth.username=movie \
+                    --set global.postgresql.auth.password=moviepassword \
+                    --set global.postgresql.auth.database=moviedb \
+                    --set livenessProbe.initialDelaySeconds=100 \
+                    --set readinessProbe.initialDelaySeconds=100
+                    helm upgrade --install cast-db oci://registry-1.docker.io/bitnamicharts/postgresql \
+                    --namespace prod \
+                    --set global.postgresql.auth.postgresPassword=admin \
+                    --set global.postgresql.auth.username=cast \
+                    --set global.postgresql.auth.password=castpassword \
+                    --set global.postgresql.auth.database=castdb \
+                    --set livenessProbe.initialDelaySeconds=100 \
+                    --set readinessProbe.initialDelaySeconds=100
+
+                '''
                 }
                 }
             }
