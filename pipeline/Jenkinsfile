@@ -131,7 +131,7 @@ pipeline{
                 --namespace staging \
                 --set global.postgresql.auth.postgresPassword=admin \
                 --set global.postgresql.auth.username=movie \
-                --set global.postgresql.auth.password=moviepassword \
+                --set global.postgresql.auth.password=$MOVIE_DB_PWD \
                 --set global.postgresql.auth.database=moviedb \
                 --set livenessProbe.initialDelaySeconds=100 \
                 --set readinessProbe.initialDelaySeconds=100
@@ -139,7 +139,7 @@ pipeline{
                 --namespace staging \
                 --set global.postgresql.auth.postgresPassword=admin \
                 --set global.postgresql.auth.username=cast \
-                --set global.postgresql.auth.password=castpassword \
+                --set global.postgresql.auth.password=$CAST_DB_PWD \
                 --set global.postgresql.auth.database=castdb \
                 --set livenessProbe.initialDelaySeconds=100 \
                 --set readinessProbe.initialDelaySeconds=100
@@ -177,7 +177,7 @@ pipeline{
                 --namespace staging \
                 --set global.postgresql.auth.postgresPassword=admin \
                 --set global.postgresql.auth.username=movie \
-                --set global.postgresql.auth.password=moviepassword \
+                --set global.postgresql.auth.password=$MOVIE_DB_PWD \
                 --set global.postgresql.auth.database=moviedb \
                 --set livenessProbe.initialDelaySeconds=100 \
                 --set readinessProbe.initialDelaySeconds=100
@@ -185,7 +185,7 @@ pipeline{
                 --namespace staging \
                 --set global.postgresql.auth.postgresPassword=admin \
                 --set global.postgresql.auth.username=cast \
-                --set global.postgresql.auth.password=castpassword \
+                --set global.postgresql.auth.password=$CAST_DB_PWD \
                 --set global.postgresql.auth.database=castdb \
                 --set livenessProbe.initialDelaySeconds=100 \
                 --set readinessProbe.initialDelaySeconds=100
@@ -223,7 +223,7 @@ pipeline{
                 --namespace qa \
                 --set global.postgresql.auth.postgresPassword=admin \
                 --set global.postgresql.auth.username=movie \
-                --set global.postgresql.auth.password=moviepassword \
+                --set global.postgresql.auth.password=$MOVIE_DB_PWD \
                 --set global.postgresql.auth.database=moviedb \
                 --set livenessProbe.initialDelaySeconds=100 \
                 --set readinessProbe.initialDelaySeconds=100
@@ -231,7 +231,7 @@ pipeline{
                 --namespace qa \
                 --set global.postgresql.auth.postgresPassword=admin \
                 --set global.postgresql.auth.username=cast \
-                --set global.postgresql.auth.password=castpassword \
+                --set global.postgresql.auth.password=$CAST_DB_PWD \
                 --set global.postgresql.auth.database=castdb \
                 --set livenessProbe.initialDelaySeconds=100 \
                 --set readinessProbe.initialDelaySeconds=100
@@ -276,7 +276,7 @@ pipeline{
                     --namespace prod \
                     --set global.postgresql.auth.postgresPassword=admin \
                     --set global.postgresql.auth.username=movie \
-                    --set global.postgresql.auth.password=moviepassword \
+                    --set global.postgresql.auth.password=$MOVIE_DB_PWD \
                     --set global.postgresql.auth.database=moviedb \
                     --set livenessProbe.initialDelaySeconds=100 \
                     --set readinessProbe.initialDelaySeconds=100
@@ -284,7 +284,7 @@ pipeline{
                     --namespace prod \
                     --set global.postgresql.auth.postgresPassword=admin \
                     --set global.postgresql.auth.username=cast \
-                    --set global.postgresql.auth.password=castpassword \
+                    --set global.postgresql.auth.password=$CAST_DB_PWD \
                     --set global.postgresql.auth.database=castdb \
                     --set livenessProbe.initialDelaySeconds=100 \
                     --set readinessProbe.initialDelaySeconds=100
