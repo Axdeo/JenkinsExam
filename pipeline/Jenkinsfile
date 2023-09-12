@@ -3,9 +3,9 @@ pipeline{
         DOCKER_ID = "axdeo" // replace this with your docker-id
         DOCKER_TAG = "v.${BUILD_ID}.0" // we will tag our images with the current build in order to increment the value by 1 with each new build
         NP_DEV = 32000
-        NP_QA = 32001
-        NP_STAGING = 32002
-        NP_PROD = 32003    
+        NP_QA = 32100
+        NP_STAGING =32200 
+        NP_PROD = 32900    
     }
 
     agent any
@@ -131,7 +131,7 @@ pipeline{
                 cat values.yaml
                 helm upgrade --install nginx . --values=values.yaml --namespace dev --set service.NodePort=${NP_DEV}
                 helm upgrade --install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
-                --namespace staging \
+                --namespace dev \
                 --set global.postgresql.auth.postgresPassword=${POSTGRES_PWD} \
                 --set global.postgresql.auth.username=movie \
                 --set global.postgresql.auth.password=${MOVIE_DB_PWD} \
@@ -139,7 +139,7 @@ pipeline{
                 --set livenessProbe.initialDelaySeconds=100 \
                 --set readinessProbe.initialDelaySeconds=100
                 helm upgrade --install cast-db oci://registry-1.docker.io/bitnamicharts/postgresql \
-                --namespace staging \
+                --namespace dev \
                 --set global.postgresql.auth.postgresPassword=${POSTGRES_PWD} \
                 --set global.postgresql.auth.username=cast \
                 --set global.postgresql.auth.password=${CAST_DB_PWD} \
