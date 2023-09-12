@@ -5,7 +5,7 @@ pipeline{
         NP_DEV = 32000
         NP_QA = 32100
         NP_STAGING =32200 
-        NP_PROD = 32900    
+        NP_PROD = 32222    
     }
 
     agent any
@@ -132,17 +132,17 @@ pipeline{
                 helm upgrade --install nginx . --values=values.yaml --namespace dev --set service.NodePort=${NP_DEV}
                 helm upgrade --install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
                 --namespace dev \
-                --set global.postgresql.auth.postgresPassword=${POSTGRES_PWD} \
+                --set global.postgresql.auth.postgresPassword=$POSTGRES_PWD \
                 --set global.postgresql.auth.username=movie \
-                --set global.postgresql.auth.password=${MOVIE_DB_PWD} \
+                --set global.postgresql.auth.password=$MOVIE_DB_PWD \
                 --set global.postgresql.auth.database=moviedb \
                 --set livenessProbe.initialDelaySeconds=100 \
                 --set readinessProbe.initialDelaySeconds=100
                 helm upgrade --install cast-db oci://registry-1.docker.io/bitnamicharts/postgresql \
                 --namespace dev \
-                --set global.postgresql.auth.postgresPassword=${POSTGRES_PWD} \
+                --set global.postgresql.auth.postgresPassword=$POSTGRES_PWD \
                 --set global.postgresql.auth.username=cast \
-                --set global.postgresql.auth.password=${CAST_DB_PWD} \
+                --set global.postgresql.auth.password=$CAST_DB_PWD \
                 --set global.postgresql.auth.database=castdb \
                 --set livenessProbe.initialDelaySeconds=100 \
                 --set readinessProbe.initialDelaySeconds=100
@@ -181,17 +181,17 @@ pipeline{
                 helm upgrade --install nginx . --values=values.yaml --namespace staging --set service.NodePort=${NP_STAGING}
                 helm upgrade --install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
                 --namespace staging \
-                --set global.postgresql.auth.postgresPassword=${POSTGRES_PWD} \
+                --set global.postgresql.auth.postgresPassword=$POSTGRES_PWD \
                 --set global.postgresql.auth.username=movie \
-                --set global.postgresql.auth.password=${MOVIE_DB_PWD} \
+                --set global.postgresql.auth.password=$MOVIE_DB_PWD \
                 --set global.postgresql.auth.database=moviedb \
                 --set livenessProbe.initialDelaySeconds=100 \
                 --set readinessProbe.initialDelaySeconds=100
                 helm upgrade --install cast-db oci://registry-1.docker.io/bitnamicharts/postgresql \
                 --namespace staging \
-                --set global.postgresql.auth.postgresPassword=${POSTGRES_PWD} \
+                --set global.postgresql.auth.postgresPassword=$POSTGRES_PWD \
                 --set global.postgresql.auth.username=cast \
-                --set global.postgresql.auth.password=${CAST_DB_PWD} \
+                --set global.postgresql.auth.password=$CAST_DB_PWD \
                 --set global.postgresql.auth.database=castdb \
                 --set livenessProbe.initialDelaySeconds=100 \
                 --set readinessProbe.initialDelaySeconds=100
