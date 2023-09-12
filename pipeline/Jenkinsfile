@@ -3,8 +3,8 @@ pipeline{
         DOCKER_ID = "axdeo" // replace this with your docker-id
         DOCKER_TAG = "v.${BUILD_ID}.0" // we will tag our images with the current build in order to increment the value by 1 with each new build
         NP_DEV = 32000
-        NP_TEST = 32001
-        NP_QA = 32002
+        NP_QA = 32001
+        NP_STAGING = 32002
         NP_PROD = 32003    
     }
 
@@ -108,6 +108,9 @@ pipeline{
             environment
             {
                 KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+                POSTGRES_PWD = credentials("POSTGRES_PWD")
+                MOVIE_DB_PWD = credentials("MOVIE_DB_PWD")
+                CAST_DB_PWD = credentials("CAST_DB_PWD")
             }
             steps {
                 script {
@@ -154,6 +157,9 @@ pipeline{
             environment
             {
                 KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+                POSTGRES_PWD = credentials("POSTGRES_PWD")
+                MOVIE_DB_PWD = credentials("MOVIE_DB_PWD")
+                CAST_DB_PWD = credentials("CAST_DB_PWD")
             }
             steps {
                 script {
@@ -200,6 +206,9 @@ pipeline{
             environment
             {
                 KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+                POSTGRES_PWD = credentials("POSTGRES_PWD")
+                MOVIE_DB_PWD = credentials("MOVIE_DB_PWD")
+                CAST_DB_PWD = credentials("CAST_DB_PWD")
             }
             steps {
                 script {
@@ -247,6 +256,9 @@ pipeline{
             environment
             {
                 KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+                POSTGRES_PWD = credentials("POSTGRES_PWD")
+                MOVIE_DB_PWD = credentials("MOVIE_DB_PWD")
+                CAST_DB_PWD = credentials("CAST_DB_PWD")
             }
             steps {
             // Create an Approval Button with a timeout of 15minutes.
