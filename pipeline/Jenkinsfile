@@ -113,16 +113,16 @@ pipeline{
                 ls
                 cat $KUBECONFIG > .kube/config
                 cd ./K8S/cast-service/
-                cat values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install cast-service . --values=values.yml --namespace dev
+                cat values.yaml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
+                helm upgrade --install cast-service . --values=values.yaml --namespace dev
                 cd ../movie-service/
-                cat values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install movie-service . --values=values.yml --namespace dev
+                cat values.yaml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
+                helm upgrade --install movie-service . --values=values.yaml --namespace dev
                 cd ../nginx/
-                cat values.yml
-                helm upgrade --install nginx . --values=values.yml --namespace dev
+                cat values.yaml
+                helm upgrade --install nginx . --values=values.yaml --namespace dev
                 helm install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
                 --namespace dev \
                 --set global.postgresql.auth.postgresPassword=admin \
@@ -158,10 +158,10 @@ pipeline{
                 mkdir .kube
                 ls
                 cat $KUBECONFIG > .kube/config
-                cp fastapi/values.yaml values.yml
-                cat values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install app fastapi --values=values.yml --namespace staging
+                cp fastapi/values.yaml values.yaml
+                cat values.yaml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
+                helm upgrade --install app fastapi --values=values.yaml --namespace staging
                 '''
                 }
             }   
@@ -185,10 +185,10 @@ pipeline{
                     mkdir .kube
                     ls
                     cat $KUBECONFIG > .kube/config
-                    cp fastapi/values.yaml values.yml
-                    cat values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install app fastapi --values=values.yml --namespace prod
+                    cp fastapi/values.yaml values.yaml
+                    cat values.yaml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yaml
+                    helm upgrade --install app fastapi --values=values.yaml --namespace prod
                     '''
                 }
                 }
