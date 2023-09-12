@@ -2,6 +2,10 @@ pipeline{
     environment { // Declaration of environment variables
         DOCKER_ID = "axdeo" // replace this with your docker-id
         DOCKER_TAG = "v.${BUILD_ID}.0" // we will tag our images with the current build in order to increment the value by 1 with each new build
+        NP_DEV = 32000
+        NP_TEST = 32001
+        NP_QA = 32002
+        NP_PROD = 32003    
     }
 
     agent any
@@ -122,7 +126,7 @@ pipeline{
                 helm upgrade --install movie-service . --values=values.yaml --namespace dev
                 cd ../nginx/
                 cat values.yaml
-                helm upgrade --install nginx . --values=values.yaml --namespace dev
+                helm upgrade --install nginx . --values=values.yaml --namespace dev --set service.NodePort=$NP_DEV
                 helm upgrade --install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
                 --namespace staging \
                 --set global.postgresql.auth.postgresPassword=admin \
@@ -168,7 +172,7 @@ pipeline{
                 helm upgrade --install movie-service . --values=values.yaml --namespace staging
                 cd ../nginx/
                 cat values.yaml
-                helm upgrade --install nginx . --values=values.yaml --namespace staging
+                helm upgrade --install nginx . --values=values.yaml --namespace staging --set service.NodePort=$NP_STAGING
                 helm upgrade --install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
                 --namespace staging \
                 --set global.postgresql.auth.postgresPassword=admin \
@@ -214,7 +218,7 @@ pipeline{
                 helm upgrade --install movie-service . --values=values.yaml --namespace qa
                 cd ../nginx/
                 cat values.yaml
-                helm upgrade --install nginx . --values=values.yaml --namespace qa
+                helm upgrade --install nginx . --values=values.yaml --namespace qa --set service.NodePort=$NP_QA
                 helm upgrade --install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
                 --namespace qa \
                 --set global.postgresql.auth.postgresPassword=admin \
@@ -267,7 +271,7 @@ pipeline{
                     helm upgrade --install movie-service . --values=values.yaml --namespace prod
                     cd ../nginx/
                     cat values.yaml
-                    helm upgrade --install nginx . --values=values.yaml --namespace prod
+                    helm upgrade --install nginx . --values=values.yaml --namespace prod --set service.NodePort=$NP_PROD
                     helm upgrade --install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
                     --namespace prod \
                     --set global.postgresql.auth.postgresPassword=admin \
