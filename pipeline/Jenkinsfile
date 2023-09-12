@@ -100,6 +100,100 @@ pipeline{
 
         }
 
+        stage('Deploiement en dev'){
+            environment
+            {
+                KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+            }
+            steps {
+                script {
+                sh '''
+                rm -Rf .kube
+                mkdir .kube
+                ls
+                cat $KUBECONFIG > .kube/config
+                cd ./K8S/cast-service/
+                cat values.yml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                helm upgrade --install cast-service . --values=values.yml --namespace dev
+                cd ../movie-service/
+                cat values.yml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                helm upgrade --install movie-service . --values=values.yml --namespace dev
+                cd ../nginx/
+                cat values.yml
+                helm upgrade --install nginx . --values=values.yml --namespace dev
+                helm install movie-db oci://registry-1.docker.io/bitnamicharts/postgresql \
+                --namespace dev \
+                --set global.postgresql.auth.postgresPassword=admin \
+                --set global.postgresql.auth.username=movie \
+                --set global.postgresql.auth.password=moviepassword \
+                --set global.postgresql.auth.database=moviedb \
+                --set livenessProbe.initialDelaySeconds=100 \
+                --set readinessProbe.initialDelaySeconds=100
+                helm install cast-db oci://registry-1.docker.io/bitnamicharts/postgresql \
+                --namespace dev \
+                --set global.postgresql.auth.postgresPassword=admin \
+                --set global.postgresql.auth.username=cast \
+                --set global.postgresql.auth.password=castpassword \
+                --set global.postgresql.auth.database=castdb \
+                --set livenessProbe.initialDelaySeconds=100 \
+                --set readinessProbe.initialDelaySeconds=100
+
+                '''
+                }
+            }
+
+            }
+
+        stage('Deploiement en staging'){
+            environment
+            {
+                KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+            }
+            steps {
+                script {
+                sh '''
+                rm -Rf .kube
+                mkdir .kube
+                ls
+                cat $KUBECONFIG > .kube/config
+                cp fastapi/values.yaml values.yml
+                cat values.yml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                helm upgrade --install app fastapi --values=values.yml --namespace staging
+                '''
+                }
+            }   
+
+            }
+        stage('Deploiement en prod'){
+            environment
+            {
+                KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+            }
+            steps {
+            // Create an Approval Button with a timeout of 15minutes.
+            // this require a manuel validation in order to deploy on production environment
+                timeout(time: 15, unit: "MINUTES") {
+                    input message: 'Do you want to deploy in production ?', ok: 'Yes'
+                    }
+
+                script {
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    ls
+                    cat $KUBECONFIG > .kube/config
+                    cp fastapi/values.yaml values.yml
+                    cat values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install app fastapi --values=values.yml --namespace prod
+                    '''
+                }
+                }
+            }
+
 
     }
 }
