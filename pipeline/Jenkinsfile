@@ -32,6 +32,16 @@ pipeline{
             }
         }
 
+        stage('fin test dockercompose') {
+            steps{
+                script{
+                sh '''
+                docker-compose down
+                '''
+                }
+            }
+        }
+
         stage('Docker Build movie-service'){
             environment
             {
